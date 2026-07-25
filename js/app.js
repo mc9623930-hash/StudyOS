@@ -2,6 +2,7 @@
    StudyOS — Main Application Controller & State Manager (Stitch & Supabase)
    ========================================================================== */
 
+import '../css/styles.css';
 import { initialStudentData } from './mockData.js';
 import { TaskManager } from './tasks.js';
 import { StudyTimer } from './timer.js';
