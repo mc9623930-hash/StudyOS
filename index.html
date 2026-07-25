@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyOS — Advanced AI Student Workstation</title>
+  <meta name="description" content="AI-powered focus and study management system designed for students. Customize profile, subjects, teachers, active recall flashcards, and timetable goals.">
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Stitch Opening Splash Screen -->
+  <div id="splash-screen" class="splash-overlay">
+    <div class="glow-effect" style="position: absolute; width: 500px; height: 500px; background: rgba(37,99,235,0.25); border-radius: 50%;"></div>
+    
+    <div class="glass-vessel" style="padding: 40px; border-radius: 24px; text-align: center; max-width: 480px; width: 90%; position: relative; z-index: 10;">
+      <div style="width: 80px; height: 80px; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; background: rgba(37,99,235,0.2); border-radius: 20px; border: 1px solid rgba(255,255,255,0.15);">
+        <span class="material-symbols-outlined filled" style="font-size: 48px; color: var(--primary);">auto_stories</span>
+      </div>
+      <h1 style="font-size: 36px; font-weight: 800; color: var(--on-surface); letter-spacing: -0.02em; margin-bottom: 8px;">StudyOS</h1>
+      <p style="font-size: 16px; color: var(--on-surface-variant); margin-bottom: 36px;">Study smarter. Achieve more.</p>
+      
+      <div class="loading-bar-container" style="height: 6px; width: 100%; margin-bottom: 12px;">
+        <div id="splash-progress-bar" class="loading-bar-fill"></div>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-geist); font-size: 12px; color: var(--outline);">
+        <span style="letter-spacing: 0.1em; text-transform: uppercase;">SYSTEM BOOTING</span>
+        <span id="splash-progress-percent" style="color: var(--primary); font-weight: 600;">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Modal (Login / Sign Up) -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="glass-card modal-content" style="max-width: 440px; border-radius: 24px; padding: 32px;">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <div style="display: inline-flex; padding: 12px; border-radius: 16px; background: rgba(37,99,235,0.15); margin-bottom: 12px;">
+          <span class="material-symbols-outlined filled" style="font-size: 32px; color: var(--primary);">lock</span>
+        </div>
+        <h2 id="auth-modal-title" style="font-size: 24px; font-weight: 700; color: var(--on-surface);">Welcome to StudyOS</h2>
+        <p id="auth-modal-subtitle" style="font-size: 14px; color: var(--on-surface-variant);">Sign in to access your synced workstation.</p>
+      </div>
+
+      <div style="display: flex; gap: 8px; background: rgba(6,14,32,0.5); padding: 4px; border-radius: 12px; margin-bottom: 20px;">
+        <button id="auth-tab-login" class="btn" style="flex: 1; padding: 8px; border-radius: 8px; background: var(--primary-container); color: white; font-weight: 600; font-size: 14px;">Sign In</button>
+        <button id="auth-tab-signup" class="btn" style="flex: 1; padding: 8px; border-radius: 8px; background: transparent; color: var(--on-surface-variant); font-weight: 600; font-size: 14px;">Create Account</button>
+      </div>
+
+      <form id="auth-form" style="display: flex; flex-direction: column; gap: 16px;">
+        <div id="auth-name-field" style="display: none;" class="auth-input-group">
+          <span class="material-symbols-outlined" style="color: var(--outline);">person</span>
+          <input type="text" id="auth-name-input" placeholder="Full Name (e.g. Arjun Sharma)">
+        </div>
+
+        <div class="auth-input-group">
+          <span class="material-symbols-outlined" style="color: var(--outline);">mail</span>
+          <input type="email" id="auth-email-input" placeholder="Email (name@university.edu)" required>
+        </div>
+
+        <div class="auth-input-group">
+          <span class="material-symbols-outlined" style="color: var(--outline);">lock</span>
+          <input type="password" id="auth-password-input" placeholder="Password (min 6 characters)" required>
+        </div>
+
+        <div id="auth-error-msg" style="display: none; color: #ffb4ab; font-size: 13px; text-align: center; background: rgba(147,0,10,0.3); padding: 8px; border-radius: 8px;"></div>
+
+        <button type="submit" id="auth-submit-btn" class="primary-btn" style="width: 100%; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 16px; margin-top: 8px;">
+          Sign In
+        </button>
+
+        <button type="button" id="auth-skip-btn" class="secondary-btn" style="width: 100%; padding: 10px; border-radius: 12px; font-size: 13px; color: var(--on-surface-variant);">
+          Continue as Guest (Local Mode)
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="app-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon-box">S</div>
+        <div>
+          <h1 class="brand-title">StudyOS</h1>
+          <p class="brand-subtitle">AI-Powered Focus</p>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <a class="nav-item active" data-view="dashboard" href="#">
+          <span class="material-symbols-outlined filled">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" data-view="calendar" href="#">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <span>Calendar & Timetable</span>
+        </a>
+        <a class="nav-item" data-view="tasks" href="#">
+          <span class="material-symbols-outlined">assignment</span>
+          <span>Tasks & Homework</span>
+        </a>
+        <a class="nav-item" data-view="timer" href="#">
+          <span class="material-symbols-outlined">timer</span>
+          <span>Focus Timer</span>
+        </a>
+        <a class="nav-item" data-view="revision" href="#">
+          <span class="material-symbols-outlined">history_edu</span>
+          <span>Active Recall Decks</span>
+        </a>
+        <a class="nav-item" data-view="marks" href="#">
+          <span class="material-symbols-outlined">book</span>
+          <span>Subjects & Marks</span>
+        </a>
+        <a class="nav-item" data-view="analytics" href="#">
+          <span class="material-symbols-outlined">analytics</span>
+          <span>Analytics</span>
+        </a>
+        <a class="nav-item" data-view="planner" href="#">
+          <span class="material-symbols-outlined">psychology</span>
+          <span>AI Planner</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="add-task-btn" id="quick-add-task-btn">
+          <span class="material-symbols-outlined">add_circle</span>
+          <span>Add Task</span>
+        </button>
+
+        <button class="add-task-btn" id="edit-profile-setup-btn" style="background: rgba(255,255,255,0.08); color: var(--on-surface);">
+          <span class="material-symbols-outlined">settings</span>
+          <span>Setup Profile</span>
+        </button>
+
+        <div class="user-profile-badge">
+          <div id="user-avatar-initials" class="avatar-img-wrapper" style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-container); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+            AS
+          </div>
+          <div>
+            <p class="user-name" id="user-name-display">Arjun Sharma</p>
+            <p class="user-class" id="user-class-display">Class 12 • PCM</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Top AppBar Header -->
+    <header class="top-header">
+      <div class="search-box">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input type="text" id="global-search" class="search-input" placeholder="Search notes, tasks, or AI insights..." />
+      </div>
+
+      <div class="header-right-actions">
+        <div class="streak-pill">
+          <span class="material-symbols-outlined filled" style="color: #ff9800;">local_fire_department</span>
+          <span id="streak-counter-display">15 Days Fire</span>
+        </div>
+        <button class="icon-btn" title="AI Study Assistant" id="ai-assistant-trigger" style="background: rgba(37,99,235,0.25); color: var(--primary);">
+          <span class="material-symbols-outlined filled">psychology</span>
+        </button>
+        <button class="icon-btn" title="App Settings & Themes" id="open-settings-btn">
+          <span class="material-symbols-outlined">settings</span>
+        </button>
+        <button class="icon-btn" title="Calendar View" id="header-calendar-btn">
+          <span class="material-symbols-outlined">calendar_month</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Canvas -->
+    <main class="main-canvas">
+      
+      <!-- View 1: Dashboard -->
+      <section id="view-dashboard" class="view-section active">
+        <!-- Hero Section -->
+        <div class="hero-banner">
+          <div class="hero-text">
+            <h2 id="greeting-title">Good morning, Arjun.</h2>
+            <p id="greeting-subtitle">Let me assist you today. Your focus sessions have improved by 12% this week.</p>
+          </div>
+          <div class="countdown-box">
+            <div class="countdown-number" id="countdown-days">42</div>
+            <div class="countdown-label" id="countdown-exam-name">Days until CBSE Boards</div>
+          </div>
+        </div>
+
+        <!-- Bento Grid Layout -->
+        <div class="bento-grid">
+          <!-- Left Column (8 Columns) -->
+          <div class="col-span-8">
+            
+            <!-- Today's Schedule Timeline -->
+            <div class="glass-card" style="padding: 24px;">
+              <div class="card-header">
+                <h3 class="card-title">Today's Schedule</h3>
+                <button class="card-action" id="view-full-calendar-btn">View Full Calendar</button>
+              </div>
+              <div class="timeline-list" id="dashboard-schedule-timeline">
+                <!-- Dynamically Populated -->
+              </div>
+            </div>
+
+            <!-- Focus Tasks Widget -->
+            <div class="glass-card" style="padding: 24px;">
+              <div class="card-header">
+                <h3 class="card-title">Focus Tasks</h3>
+                <div style="font-size: 12px; font-family: var(--font-geist); background: rgba(37, 99, 235, 0.2); color: var(--primary); padding: 4px 10px; border-radius: 6px;" id="dashboard-task-counter">
+                  0/0 Done
+                </div>
+              </div>
+              <ul class="tasks-list" id="dashboard-tasks-list">
+                <!-- Dynamically Populated by Tasks JS -->
+              </ul>
+              <button class="card-action" style="margin-top: 14px; width: 100%; text-align: center; border: 1px dashed var(--glass-border); padding: 10px; border-radius: 10px;" id="add-custom-task-trigger">
+                + Add Custom Task
+              </button>
+            </div>
+
+            <!-- Weekly Activity Bar Chart -->
+            <div class="glass-card" style="padding: 24px;">
+              <div class="card-header">
+                <h3 class="card-title">Weekly Focus Activity</h3>
+                <span style="font-size: 12px; color: var(--on-surface-variant); font-family: var(--font-geist);">Hours / Day</span>
+              </div>
+              <div class="chart-container" id="dashboard-activity-chart">
+                <!-- Dynamically Populated -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column (4 Columns) -->
+          <div class="col-span-4">
+            
+            <!-- AI Recommendation Widget -->
+            <div class="glass-card ai-insight-card" style="padding: 24px;">
+              <div class="ai-header">
+                <span class="material-symbols-outlined filled">auto_awesome</span>
+                <span>AI Insight</span>
+              </div>
+              <p class="ai-quote" id="dashboard-ai-quote">"Focus on your primary subjects today — performance trend shows room for improvement."</p>
+              <button class="ai-btn" id="launch-ai-review-btn">Launch Review Session</button>
+            </div>
+
+            <!-- Pomodoro Focus Timer Widget -->
+            <div class="glass-card timer-widget" style="padding: 24px;">
+              <div class="card-header" style="width: 100%; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">
+                <h3 class="card-title" style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--on-surface-variant);">Focus Mode</h3>
+              </div>
+              
+              <div class="timer-circle-box">
+                <svg>
+                  <circle cx="90" cy="90" r="76" fill="transparent" stroke="rgba(255,255,255,0.08)" stroke-width="8"></circle>
+                  <circle id="dash-timer-progress-ring" cx="90" cy="90" r="76" fill="transparent" stroke="var(--primary-container)" stroke-width="8" stroke-dasharray="477.52" stroke-dashoffset="119.38" stroke-linecap="round"></circle>
+                </svg>
+                <div class="timer-display-overlay">
+                  <span class="timer-digits" id="dash-timer-digits">25:00</span>
+                  <span class="timer-session-label" id="dash-timer-subject">Physics Focus</span>
+                </div>
+              </div>
+
+              <div class="timer-controls">
+                <button class="btn-timer-primary" id="dash-timer-start-btn">Start Focus</button>
+                <button class="btn-timer-secondary" id="dash-timer-reset-btn" title="Reset">
+                  <span class="material-symbols-outlined">restart_alt</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Syllabus Progress Rings -->
+            <div class="glass-card" style="padding: 24px;">
+              <div class="card-header">
+                <h3 class="card-title">Syllabus Progress</h3>
+              </div>
+              <div class="progress-subject-list" id="dashboard-syllabus-list">
+                <!-- Dynamically Populated -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- View 2: Calendar & Timetable -->
+      <section id="view-calendar" class="view-section">
+        <div class="glass-card" style="padding: 28px;">
+          <div class="card-header">
+            <h3 class="card-title">Calendar & Study Timetable</h3>
+          </div>
+          <div id="calendar-content-container">
+            <!-- Rendered by Calendar JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- View 3: Tasks Manager -->
+      <section id="view-tasks" class="view-section">
+        <div class="glass-card" style="padding: 28px;">
+          <div class="card-header">
+            <h3 class="card-title">All Study Tasks & Homework</h3>
+            <button class="btn-timer-primary" style="max-width: 160px; padding: 8px 16px; font-size: 13px;" id="tasks-page-add-btn">+ Add Task</button>
+          </div>
+          <div id="tasks-full-container">
+            <!-- Rendered by Tasks JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- View 4: Focus Timer -->
+      <section id="view-timer" class="view-section">
+        <div class="glass-card" style="padding: 28px; text-align: center;">
+          <div class="card-header">
+            <h3 class="card-title">Focus Study Timer & Ambient Audio Generator</h3>
+          </div>
+          <div id="timer-full-container">
+            <!-- Rendered by Timer JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- View 5: Active Recall Flashcards Deck -->
+      <section id="view-revision" class="view-section">
+        <div class="glass-card" style="padding: 28px; text-align: center;">
+          <div class="card-header">
+            <h3 class="card-title">Active Recall Flashcard Decks & Spaced Repetition</h3>
+          </div>
+          <div id="revision-content-container">
+            <!-- Rendered by Revision Engine JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- View 6: Subjects & Marks Tracker -->
+      <section id="view-marks" class="view-section">
+        <div class="glass-card" style="padding: 28px;">
+          <div class="card-header">
+            <h3 class="card-title">Subjects & Test Marks Tracker</h3>
+            <button class="btn-timer-primary" style="max-width: 160px; padding: 8px 16px; font-size: 13px;" onclick="window.studyApp.openLogExamModal()">+ Log Exam Mark</button>
+          </div>
+          <div id="marks-full-container">
+            <!-- Rendered by Marks JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- View 7: Analytics -->
+      <section id="view-analytics" class="view-section">
+        <div class="glass-card" style="padding: 28px;">
+          <div class="card-header">
+            <h3 class="card-title">Study Analytics & Weak Subject Insights</h3>
+          </div>
+          <div id="analytics-full-container">
+            <!-- Rendered by Analytics JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- View 8: AI Planner -->
+      <section id="view-planner" class="view-section">
+        <div class="glass-card" style="padding: 28px;">
+          <div class="card-header">
+            <h3 class="card-title">Smart AI Timetable Generator</h3>
+          </div>
+          <div id="planner-full-container">
+            <!-- Rendered by Planner JS -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- Setup Wizard Modal -->
+  <div class="modal-overlay" id="onboarding-modal">
+    <div class="glass-card modal-content" style="max-width: 580px;">
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px;">
+        <div>
+          <h3 style="font-size: 20px; font-weight: 700;">Student Setup & Profile Wizard</h3>
+          <p style="font-size: 12px; color: var(--on-surface-variant); font-family: var(--font-geist);">Enter your details to personalize your StudyOS experience</p>
+        </div>
+        <button onclick="document.getElementById('onboarding-modal').classList.remove('active')" style="background: none; border: none; color: var(--on-surface-variant); cursor: pointer;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Step Indicators -->
+      <div style="display: flex; gap: 10px; margin-bottom: 24px;">
+        <button id="step-indicator-1" onclick="window.studyApp.onboardingWizard.showStep(1)" style="flex: 1; padding: 8px; border-radius: 8px; border: none; font-weight: 700; font-size: 12px; font-family: var(--font-geist); cursor: pointer; background: var(--primary-container); color: var(--on-primary-container);">1. Student Info</button>
+        <button id="step-indicator-2" onclick="window.studyApp.onboardingWizard.showStep(2)" style="flex: 1; padding: 8px; border-radius: 8px; border: none; font-weight: 700; font-size: 12px; font-family: var(--font-geist); cursor: pointer; background: rgba(255,255,255,0.1); color: var(--on-surface-variant);">2. Subjects & Teachers</button>
+        <button id="step-indicator-3" onclick="window.studyApp.onboardingWizard.showStep(3)" style="flex: 1; padding: 8px; border-radius: 8px; border: none; font-weight: 700; font-size: 12px; font-family: var(--font-geist); cursor: pointer; background: rgba(255,255,255,0.1); color: var(--on-surface-variant);">3. Schedule & Goals</button>
+      </div>
+
+      <!-- Step 1: Student Profile -->
+      <div id="onboarding-step-1">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div>
+            <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Student Full Name</label>
+            <input type="text" id="setup-name-input" class="search-input" style="padding-left: 14px; margin-top: 4px;" placeholder="e.g. Aarav Sharma" />
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Class / Grade & Stream</label>
+              <input type="text" id="setup-grade-input" class="search-input" style="padding-left: 14px; margin-top: 4px;" placeholder="e.g. Class 12 • PCM" />
+            </div>
+            <div>
+              <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Target Board / Exam</label>
+              <input type="text" id="setup-exam-input" class="search-input" style="padding-left: 14px; margin-top: 4px;" placeholder="e.g. CBSE Boards / JEE" />
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Days Remaining until Exam</label>
+              <input type="number" id="setup-days-input" class="search-input" style="padding-left: 14px; margin-top: 4px;" placeholder="e.g. 42" />
+            </div>
+            <div>
+              <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Target Percentage Goal</label>
+              <input type="number" id="setup-target-input" class="search-input" style="padding-left: 14px; margin-top: 4px;" placeholder="e.g. 95" />
+            </div>
+          </div>
+          <button type="button" onclick="window.studyApp.onboardingWizard.showStep(2)" class="btn-timer-primary" style="margin-top: 10px; padding: 12px;">Next: Configure Subjects & Teachers →</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Subjects & Teachers -->
+      <div id="onboarding-step-2" style="display: none;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Subjects & Teacher Names List</label>
+            <button type="button" id="add-subject-row-btn" class="card-action" style="font-size: 12px;">+ Add Subject</button>
+          </div>
+          
+          <div id="onboarding-subjects-list" style="max-height: 220px; overflow-y: auto; padding-right: 4px;">
+            <!-- Rendered by Onboarding JS -->
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-top: 16px;">
+            <button type="button" onclick="window.studyApp.onboardingWizard.showStep(1)" class="btn-timer-secondary" style="padding: 12px 20px;">Back</button>
+            <button type="button" onclick="window.studyApp.onboardingWizard.showStep(3)" class="btn-timer-primary" style="flex: 1; padding: 12px;">Next: Set Daily Schedule →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Timetable & Goal -->
+      <div id="onboarding-step-3" style="display: none;">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div>
+            <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">School Timings (Clock Picker)</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px;">
+              <div>
+                <span style="font-size: 11px; color: var(--on-surface-variant);">Start Time</span>
+                <input type="time" id="setup-school-start" value="08:00" class="search-input" style="padding-left: 12px;" />
+              </div>
+              <div>
+                <span style="font-size: 11px; color: var(--on-surface-variant);">End Time</span>
+                <input type="time" id="setup-school-end" value="14:00" class="search-input" style="padding-left: 12px;" />
+              </div>
+            </div>
+          </div>
+          <div>
+            <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Coaching Timings (Clock Picker)</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px;">
+              <div>
+                <span style="font-size: 11px; color: var(--on-surface-variant);">Start Time</span>
+                <input type="time" id="setup-coaching-start" value="15:30" class="search-input" style="padding-left: 12px;" />
+              </div>
+              <div>
+                <span style="font-size: 11px; color: var(--on-surface-variant);">End Time</span>
+                <input type="time" id="setup-coaching-end" value="17:30" class="search-input" style="padding-left: 12px;" />
+              </div>
+            </div>
+          </div>
+          <div>
+            <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Daily Study Goal (Hours / Day)</label>
+            <input type="number" step="0.5" id="setup-hours-input" class="search-input" style="padding-left: 14px; margin-top: 4px;" placeholder="e.g. 6.5" value="6.5" />
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-top: 10px;">
+            <button type="button" onclick="window.studyApp.onboardingWizard.showStep(2)" class="btn-timer-secondary" style="padding: 12px 20px;">Back</button>
+            <button type="button" onclick="window.studyApp.onboardingWizard.completeWizard()" class="btn-timer-primary" style="flex: 1; padding: 12px; background: var(--tertiary); color: #003915;">Finish Setup & Launch StudyOS</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Interactive Modal: Add Task Modal -->
+  <div class="modal-overlay" id="add-task-modal">
+    <div class="glass-card modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="font-size: 18px; font-weight: 700;">Add New Study Task</h3>
+        <button onclick="window.studyApp.closeModal('add-task-modal')" style="background: none; border: none; color: var(--on-surface-variant); cursor: pointer;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <form id="add-task-form" style="display: flex; flex-direction: column; gap: 14px;">
+        <div>
+          <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Task Title</label>
+          <input type="text" id="task-title-input" required class="search-input" style="padding-left: 14px; margin-top: 4px;" placeholder="e.g. Solve Physics Electrostatics PYQs" />
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Subject</label>
+            <select id="task-subject-input" class="search-input" style="padding-left: 14px; margin-top: 4px;">
+              <option value="Physics">Physics</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="English">English</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Priority</label>
+            <select id="task-priority-input" class="search-input" style="padding-left: 14px; margin-top: 4px;">
+              <option value="high">High Priority</option>
+              <option value="medium">Medium Priority</option>
+              <option value="low">Low Priority</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Due Date</label>
+          <input type="text" id="task-date-input" class="search-input" style="padding-left: 14px; margin-top: 4px;" placeholder="e.g. Tomorrow or 26 Jul" />
+        </div>
+        <button type="submit" class="btn-timer-primary" style="margin-top: 10px; padding: 12px;">Create Task</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Interactive Modal: Log Exam Mark Modal -->
+  <div class="modal-overlay" id="log-exam-modal">
+    <div class="glass-card modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="font-size: 18px; font-weight: 700;">Log Test Score</h3>
+        <button onclick="window.studyApp.closeModal('log-exam-modal')" style="background: none; border: none; color: var(--on-surface-variant); cursor: pointer;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <form id="log-exam-form" style="display: flex; flex-direction: column; gap: 14px;">
+        <div>
+          <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Exam / Test Name</label>
+          <input type="text" id="exam-name-input" required class="search-input" style="padding-left: 14px; margin-top: 4px;" placeholder="e.g. Weekly Coaching Test 2" />
+        </div>
+        <div>
+          <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Subject</label>
+          <select id="exam-subject-input" class="search-input" style="padding-left: 14px; margin-top: 4px;">
+            <option value="Physics">Physics</option>
+            <option value="Mathematics">Mathematics</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="English">English</option>
+          </select>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Marks Scored</label>
+            <input type="number" id="exam-score-input" required min="0" max="100" class="search-input" style="padding-left: 14px; margin-top: 4px;" placeholder="e.g. 78" />
+          </div>
+          <div>
+            <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Total Marks</label>
+            <input type="number" id="exam-total-input" value="100" required class="search-input" style="padding-left: 14px; margin-top: 4px;" />
+          </div>
+        </div>
+        <div>
+          <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Test Date</label>
+          <input type="date" id="exam-date-input" class="search-input" style="padding-left: 14px; margin-top: 4px;" />
+        </div>
+        <button type="submit" class="btn-timer-primary" style="margin-top: 10px; padding: 12px;">Save Exam Mark</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Interactive Multi-Step Tutorial Carousel Modal -->
+  <div class="modal-overlay" id="tutorial-modal">
+    <div class="glass-card modal-content" style="max-width: 520px; border-radius: 24px; padding: 32px; text-align: center; position: relative;">
+      
+      <!-- Tutorial Slide 1 -->
+      <div class="tutorial-slide" id="tutorial-slide-1">
+        <div style="width: 72px; height: 72px; margin: 0 auto 20px; background: rgba(37,99,235,0.2); border-radius: 20px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.15);">
+          <span class="material-symbols-outlined filled" style="font-size: 40px; color: var(--primary);">auto_stories</span>
+        </div>
+        <h2 style="font-size: 24px; font-weight: 700; color: var(--on-surface); margin-bottom: 10px;">Welcome to StudyOS</h2>
+        <p style="font-size: 14px; color: var(--on-surface-variant); line-height: 1.6; margin-bottom: 24px;">
+          Your high-performance, AI-driven academic workstation designed for focus, syllabus mastery, and goal tracking.
+        </p>
+      </div>
+
+      <!-- Tutorial Slide 2 -->
+      <div class="tutorial-slide" id="tutorial-slide-2" style="display: none;">
+        <div style="width: 72px; height: 72px; margin: 0 auto 20px; background: rgba(74,225,118,0.2); border-radius: 20px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.15);">
+          <span class="material-symbols-outlined filled" style="font-size: 40px; color: var(--tertiary);">psychology</span>
+        </div>
+        <h2 style="font-size: 24px; font-weight: 700; color: var(--on-surface); margin-bottom: 10px;">AI Study Planner</h2>
+        <p style="font-size: 14px; color: var(--on-surface-variant); line-height: 1.6; margin-bottom: 24px;">
+          Smart revision scheduling that adapts automatically to your weak subjects, exam countdowns, and daily available study hours.
+        </p>
+      </div>
+
+      <!-- Tutorial Slide 3 -->
+      <div class="tutorial-slide" id="tutorial-slide-3" style="display: none;">
+        <div style="width: 72px; height: 72px; margin: 0 auto 20px; background: rgba(180,197,255,0.2); border-radius: 20px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.15);">
+          <span class="material-symbols-outlined filled" style="font-size: 40px; color: var(--primary);">history_edu</span>
+        </div>
+        <h2 style="font-size: 24px; font-weight: 700; color: var(--on-surface); margin-bottom: 10px;">Active Recall & 3D Decks</h2>
+        <p style="font-size: 14px; color: var(--on-surface-variant); line-height: 1.6; margin-bottom: 24px;">
+          Practice interactive 3D flashcards with spaced repetition algorithms for maximum long-term exam retention.
+        </p>
+      </div>
+
+      <!-- Tutorial Slide 4 -->
+      <div class="tutorial-slide" id="tutorial-slide-4" style="display: none;">
+        <div style="width: 72px; height: 72px; margin: 0 auto 20px; background: rgba(255,180,171,0.2); border-radius: 20px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.15);">
+          <span class="material-symbols-outlined filled" style="font-size: 40px; color: var(--error);">cloud_sync</span>
+        </div>
+        <h2 style="font-size: 24px; font-weight: 700; color: var(--on-surface); margin-bottom: 10px;">Cloud Sync & Multi-Theme</h2>
+        <p style="font-size: 14px; color: var(--on-surface-variant); line-height: 1.6; margin-bottom: 24px;">
+          All your tasks, test scores, and focus logs sync seamlessly to Supabase Cloud across all your devices.
+        </p>
+      </div>
+
+      <!-- Carousel Pagination Dots -->
+      <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 24px;">
+        <div class="tutorial-dot active" id="tut-dot-1"></div>
+        <div class="tutorial-dot" id="tut-dot-2"></div>
+        <div class="tutorial-dot" id="tut-dot-3"></div>
+        <div class="tutorial-dot" id="tut-dot-4"></div>
+      </div>
+
+      <!-- Navigation Controls -->
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+        <button id="tutorial-prev-btn" class="secondary-btn" style="padding: 10px 20px; border-radius: 12px; font-size: 14px; visibility: hidden;">← Back</button>
+        <button id="tutorial-next-btn" class="primary-btn" style="padding: 12px 28px; border-radius: 12px; font-size: 15px; font-weight: 700; flex: 1;">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings & Theme Customization Modal -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="glass-card modal-content" style="max-width: 480px; border-radius: 24px; padding: 28px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="material-symbols-outlined" style="color: var(--primary);">settings</span>
+          <h3 style="font-size: 18px; font-weight: 700;">App Settings & Personalization</h3>
+        </div>
+        <button id="close-settings-btn" style="background: none; border: none; color: var(--on-surface-variant); cursor: pointer;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <!-- Theme Selection -->
+        <div>
+          <label style="font-size: 13px; font-family: var(--font-geist); color: var(--on-surface-variant); display: block; margin-bottom: 10px;">Choose Theme Aesthetics</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="theme-option-card active" data-theme-val="cyberpunk">
+              <div style="width: 16px; height: 16px; border-radius: 50%; background: #2563eb;"></div>
+              <span style="font-size: 13px; font-weight: 600;">Midnight Cyberpunk</span>
+            </div>
+            <div class="theme-option-card" data-theme-val="emerald">
+              <div style="width: 16px; height: 16px; border-radius: 50%; background: #4ae176;"></div>
+              <span style="font-size: 13px; font-weight: 600;">Neon Emerald</span>
+            </div>
+            <div class="theme-option-card" data-theme-val="amethyst">
+              <div style="width: 16px; height: 16px; border-radius: 50%; background: #d0bcff;"></div>
+              <span style="font-size: 13px; font-weight: 600;">Sunset Amethyst</span>
+            </div>
+            <div class="theme-option-card" data-theme-val="amber">
+              <div style="width: 16px; height: 16px; border-radius: 50%; background: #ffdcbe;"></div>
+              <span style="font-size: 13px; font-weight: 600;">Solar Amber</span>
+            </div>
+            <div class="theme-option-card" data-theme-val="light" style="grid-column: span 2;">
+              <div style="width: 16px; height: 16px; border-radius: 50%; background: #ffffff; border: 1px solid #ccc;"></div>
+              <span style="font-size: 13px; font-weight: 600;">Clean Light Mode</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sound & Feedback -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(6,14,32,0.4); border-radius: 12px;">
+          <div>
+            <p style="font-size: 14px; font-weight: 600;">Timer Sound Effects</p>
+            <p style="font-size: 12px; color: var(--on-surface-variant);">Play audio chime when pomodoro completes</p>
+          </div>
+          <input type="checkbox" id="setting-sound-toggle" checked style="width: 18px; height: 18px; accent-color: var(--primary-container);" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive AI Assistant Side Drawer -->
+  <div class="side-drawer" id="ai-assistant-drawer">
+    <div style="padding: 16px 20px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="material-symbols-outlined filled" style="color: var(--primary);">psychology</span>
+        <div>
+          <h3 style="font-size: 16px; font-weight: 700;">StudyOS AI Assistant</h3>
+          <p style="font-size: 11px; color: var(--on-surface-variant);">Instant Study & Customization Helper</p>
+        </div>
+      </div>
+      <button id="close-ai-drawer-btn" style="background: none; border: none; color: var(--on-surface-variant); cursor: pointer;">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <!-- Chat Messages Container -->
+    <div id="ai-chat-messages" style="flex: 1; padding: 16px; overflow-y: auto;"></div>
+
+    <!-- Suggested Quick Prompts -->
+    <div style="padding: 10px 16px; display: flex; gap: 6px; overflow-x: auto; border-top: 1px solid var(--glass-border);">
+      <button class="ai-chip-prompt" style="padding: 6px 12px; border-radius: 20px; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); font-size: 11px; white-space: nowrap; cursor: pointer;">🌲 Change to Emerald Theme</button>
+      <button class="ai-chip-prompt" style="padding: 6px 12px; border-radius: 20px; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); font-size: 11px; white-space: nowrap; cursor: pointer;">📚 Physics Formulas</button>
+      <button class="ai-chip-prompt" style="padding: 6px 12px; border-radius: 20px; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); font-size: 11px; white-space: nowrap; cursor: pointer;">🎯 Set goal to 8 hours</button>
+    </div>
+
+    <!-- Input Bar -->
+    <div style="padding: 12px 16px; border-top: 1px solid var(--glass-border); display: flex; gap: 8px;">
+      <input type="text" id="ai-user-input" placeholder="Ask formulas or command AI..." class="search-input" style="padding-left: 14px; font-size: 13px;" />
+      <button id="ai-send-btn" class="primary-btn" style="padding: 0 16px; border-radius: 10px;">
+        <span class="material-symbols-outlined">send</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
