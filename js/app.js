@@ -13,6 +13,8 @@ import { RevisionEngine } from './revision.js';
 import { OnboardingWizard } from './onboarding.js';
 import { SettingsManager } from './settings.js';
 import { AIAssistant } from './aiAssistant.js';
+import { AdminMonitor } from './adminMonitor.js';
+import { TestManager } from './testManager.js';
 import { 
   signUpUser, 
   signInUser, 
@@ -21,7 +23,8 @@ import {
   loadUserDataFromSupabase,
   saveProfileToSupabase,
   saveTaskToSupabase,
-  saveTimerLogToSupabase
+  saveTimerLogToSupabase,
+  saveUserActivityToSupabase
 } from './supabase.js';
 
 class StudyApp {
@@ -39,6 +42,8 @@ class StudyApp {
     this.onboardingWizard = new OnboardingWizard(this, () => this.onProfileUpdated());
     this.settingsManager = new SettingsManager(this);
     this.aiAssistant = new AIAssistant(this);
+    this.adminMonitor = new AdminMonitor(this);
+    this.testManager = new TestManager(this);
 
     this.currentView = 'dashboard';
   }
@@ -90,18 +95,45 @@ class StudyApp {
     this.onboardingWizard.init();
     this.settingsManager.init();
     this.aiAssistant.init();
+    this.adminMonitor.init();
+    await this.testManager.init();
     this.bindNavigation();
     this.bindButtons();
     this.bindModals();
     this.bindAuthModal();
     this.updateStudentProfileUI();
     this.renderAllViews();
+    this.startActivityHeartbeat();
 
     // Start Stitch Splash Screen boot animation
     await this.runSplashBootAnimation();
 
     // Check Auth session
     await this.checkAuthSession();
+  }
+
+  startActivityHeartbeat() {
+    // Periodically update user activity in Supabase every 60s
+    const sendBeat = () => {
+      if (this.currentUser && this.currentUser.id) {
+        const isTimerRunning = this.studyTimer && this.studyTimer.isRunning;
+        const currentTimerSubject = this.studyTimer?.currentSubject || null;
+        const minsLeft = this.studyTimer ? Math.ceil(this.studyTimer.timeLeft / 60) : 0;
+        const activeTask = this.tasks?.find(t => !t.completed)?.title || 'Browsing Dashboard';
+
+        saveUserActivityToSupabase(this.currentUser.id, {
+          name: this.profile?.name || 'Student',
+          grade: this.profile?.grade || 'Class 12 • PCM',
+          status: isTimerRunning ? 'studying' : 'online',
+          currentActivity: isTimerRunning ? `Focusing on ${currentTimerSubject}` : `Task: ${activeTask}`,
+          activeSubject: currentTimerSubject,
+          timerMinsLeft: minsLeft
+        });
+      }
+    };
+
+    sendBeat();
+    setInterval(sendBeat, 60000);
   }
 
   async runSplashBootAnimation() {
@@ -456,6 +488,8 @@ class StudyApp {
     if (viewName === 'revision') this.revisionEngine.render();
     if (viewName === 'marks') this.marksTracker.render();
     if (viewName === 'analytics') this.analyticsEngine.render();
+    if (viewName === 'admin-monitor') this.adminMonitor.render();
+    if (viewName === 'syllabus-tests') this.testManager.render();
     if (viewName === 'dashboard') {
       this.aiPlanner.render();
       this.taskManager.render();

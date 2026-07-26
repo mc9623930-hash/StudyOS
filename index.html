@@ -127,6 +127,14 @@
           <span class="material-symbols-outlined">psychology</span>
           <span>AI Planner</span>
         </a>
+        <a class="nav-item" data-view="admin-monitor" href="#">
+          <span class="material-symbols-outlined">group</span>
+          <span>Live User Monitor</span>
+        </a>
+        <a class="nav-item" data-view="syllabus-tests" href="#">
+          <span class="material-symbols-outlined">quiz</span>
+          <span>Syllabus Tests</span>
+        </a>
       </nav>
 
       <div class="sidebar-footer">
@@ -374,6 +382,16 @@
             <!-- Rendered by Planner JS -->
           </div>
         </div>
+      </section>
+
+      <!-- View 9: Live User Monitor -->
+      <section id="view-admin-monitor" class="view-section">
+        <!-- Rendered by AdminMonitor JS -->
+      </section>
+
+      <!-- View 10: Syllabus Tests -->
+      <section id="view-syllabus-tests" class="view-section">
+        <!-- Rendered by TestManager JS -->
       </section>
 
     </main>
@@ -730,9 +748,105 @@
         <span class="material-symbols-outlined">send</span>
       </button>
     </div>
+  <!-- Upload / Create Syllabus Test Modal -->
+  <div class="modal-overlay" id="modal-upload-test">
+    <div class="glass-card modal-content" style="max-width: 620px; border-radius: 24px; padding: 28px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="material-symbols-outlined" style="color: var(--primary);">upload_file</span>
+          <h3 style="font-size: 18px; font-weight: 700;">Upload Syllabus Test</h3>
+        </div>
+        <button class="modal-close" style="background: none; border: none; color: var(--on-surface-variant); cursor: pointer;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- JSON File Quick Upload Section -->
+      <div style="background: rgba(37,99,235,0.1); border: 1px dashed var(--primary); padding: 16px; border-radius: 16px; margin-bottom: 20px; text-align: center;">
+        <p style="font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 6px;">Option A: Import JSON Syllabus Test File</p>
+        <input type="file" id="file-upload-json" accept=".json" style="font-size: 12px; color: var(--on-surface-variant);" />
+      </div>
+
+      <div style="text-align: center; font-size: 12px; color: var(--outline); margin-bottom: 16px;">— OR CREATE MANUALLY —</div>
+
+      <!-- Interactive Form Upload Section -->
+      <form id="form-upload-test" style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="font-size: 12px; color: var(--on-surface-variant);">Test Title</label>
+            <input type="text" id="input-test-title" class="search-input" placeholder="e.g. Electrostatics Unit Mock" required />
+          </div>
+          <div>
+            <label style="font-size: 12px; color: var(--on-surface-variant);">Target Grade / Stream</label>
+            <select id="input-test-grade" class="search-input" style="padding-left: 12px;">
+              <option value="Class 12 • PCM">Class 12 • PCM</option>
+              <option value="Class 12 • PCB">Class 12 • PCB</option>
+              <option value="Class 11 • PCM">Class 11 • PCM</option>
+              <option value="Class 10 • Board Prep">Class 10 • Board Prep</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="font-size: 12px; color: var(--on-surface-variant);">Subject</label>
+            <select id="input-test-subject" class="search-input" style="padding-left: 12px;">
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Biology">Biology</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 12px; color: var(--on-surface-variant);">Chapter / Topic</label>
+            <input type="text" id="input-test-chapter" class="search-input" placeholder="e.g. Electric Charges" required />
+          </div>
+          <div>
+            <label style="font-size: 12px; color: var(--on-surface-variant);">Duration (Mins)</label>
+            <input type="number" id="input-test-duration" class="search-input" value="20" required />
+          </div>
+        </div>
+
+        <!-- Sample Question Builder Fields -->
+        <div style="background: rgba(6,14,32,0.4); padding: 14px; border-radius: 12px; border: 1px solid var(--glass-border);">
+          <p style="font-size: 13px; font-weight: 600; margin-bottom: 8px;">First Question Entry</p>
+          <input type="text" id="input-q1-text" class="search-input" placeholder="Question Text..." style="margin-bottom: 8px;" />
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+            <input type="text" id="input-q1-a" class="search-input" placeholder="Option A" />
+            <input type="text" id="input-q1-b" class="search-input" placeholder="Option B" />
+            <input type="text" id="input-q1-c" class="search-input" placeholder="Option C" />
+            <input type="text" id="input-q1-d" class="search-input" placeholder="Option D" />
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 8px;">
+            <select id="input-q1-correct" class="search-input" style="padding-left: 12px;">
+              <option value="A">Correct: Option A</option>
+              <option value="B">Correct: Option B</option>
+              <option value="C">Correct: Option C</option>
+              <option value="D">Correct: Option D</option>
+            </select>
+            <input type="text" id="input-q1-exp" class="search-input" placeholder="Solution Explanation..." />
+          </div>
+        </div>
+
+        <button type="submit" class="primary-btn" style="padding: 12px; border-radius: 12px; font-weight: 700;">
+          Publish Syllabus Test
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Interactive Test Taking Modal Runner -->
+  <div class="modal-overlay" id="modal-take-test">
+    <!-- Rendered dynamically by TestManager JS -->
+  </div>
+
+  <!-- Test Result Modal -->
+  <div class="modal-overlay" id="modal-test-result">
+    <!-- Rendered dynamically by TestManager JS -->
   </div>
 
   <!-- Scripts -->
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
+
