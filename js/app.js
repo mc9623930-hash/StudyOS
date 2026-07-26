@@ -13,7 +13,6 @@ import { RevisionEngine } from './revision.js';
 import { OnboardingWizard } from './onboarding.js';
 import { SettingsManager } from './settings.js';
 import { AIAssistant } from './aiAssistant.js';
-import { AdminMonitor } from './adminMonitor.js';
 import { TestManager } from './testManager.js';
 import { 
   signUpUser, 
@@ -42,7 +41,6 @@ class StudyApp {
     this.onboardingWizard = new OnboardingWizard(this, () => this.onProfileUpdated());
     this.settingsManager = new SettingsManager(this);
     this.aiAssistant = new AIAssistant(this);
-    this.adminMonitor = new AdminMonitor(this);
     this.testManager = new TestManager(this);
 
     this.currentView = 'dashboard';
@@ -95,7 +93,6 @@ class StudyApp {
     this.onboardingWizard.init();
     this.settingsManager.init();
     this.aiAssistant.init();
-    this.adminMonitor.init();
     await this.testManager.init();
     this.bindNavigation();
     this.bindButtons();
@@ -488,7 +485,6 @@ class StudyApp {
     if (viewName === 'revision') this.revisionEngine.render();
     if (viewName === 'marks') this.marksTracker.render();
     if (viewName === 'analytics') this.analyticsEngine.render();
-    if (viewName === 'admin-monitor') this.adminMonitor.render();
     if (viewName === 'syllabus-tests') this.testManager.render();
     if (viewName === 'dashboard') {
       this.aiPlanner.render();

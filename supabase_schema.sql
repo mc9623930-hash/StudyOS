@@ -104,8 +104,8 @@ CREATE TABLE IF NOT EXISTS public.user_activity (
 
 ALTER TABLE public.user_activity ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Anyone authenticated can view active users" ON public.user_activity
-  FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Users can view own activity" ON public.user_activity
+  FOR SELECT USING (auth.uid() = user_id);
 
 CREATE POLICY "Users can update own activity" ON public.user_activity
   FOR ALL USING (auth.uid() = user_id);
