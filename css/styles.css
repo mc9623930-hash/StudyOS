@@ -1393,6 +1393,31 @@ body {
   box-shadow: 0 0 24px rgba(245, 158, 11, 0.3);
 }
 
+.grade-toggle-pill {
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.grade-toggle-pill.active, .grade-toggle-pill:hover {
+  background: var(--primary-container);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+}
+
+.border-primary-highlight {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 16px rgba(37, 99, 235, 0.25);
+}
+
+
 
 
 

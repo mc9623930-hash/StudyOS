@@ -15,6 +15,7 @@ export class TestManager {
     this.tests = [];
     this.testResults = [];
     this.activeFilterSubject = 'all';
+    this.activeFilterGrade = 'student'; // 'student' or 'all'
 
     // Test Taking State
     this.currentTest = null;
@@ -44,8 +45,9 @@ export class TestManager {
       }
     }
 
-    // Default pre-populated syllabus tests curated for standard Indian curriculums (Class 12 & Class 10)
+    // Pre-populated syllabus test suite mapped across Class 12 (PCM/PCB/Commerce), Class 11, and Class 10
     this.tests = [
+      // --- CLASS 12 PCM ---
       {
         id: 'test_phy_electrostatics',
         title: 'Electrostatics & Electric Fields High-Yield Quiz',
@@ -65,7 +67,7 @@ export class TestManager {
             optionC: '2kQ / R',
             optionD: 'Infinite',
             correctOption: 'B',
-            explanation: 'According to Gauss Law, the net charge enclosed inside a hollow conductor is zero, so electric field E = 0 inside.',
+            explanation: 'According to Gauss Law, net charge enclosed inside a hollow conductor is zero, so electric field E = 0 inside.',
             marks: 5,
             topic: 'Gauss Law'
           },
@@ -77,7 +79,7 @@ export class TestManager {
             optionC: 'C N m⁻¹',
             optionD: 'N C⁻¹ m⁻²',
             correctOption: 'A',
-            explanation: 'From Coulomb Law F = (1 / 4πε₀) * (q₁q₂/r²), unit of ε₀ is C² N⁻¹ m⁻² (or Farad/meter).',
+            explanation: 'From Coulomb Law F = (1 / 4πε₀) * (q₁q₂/r²), unit of ε₀ is C² N⁻¹ m⁻².',
             marks: 5,
             topic: 'Coulomb Law'
           },
@@ -89,17 +91,17 @@ export class TestManager {
             optionC: '90°',
             optionD: '180°',
             correctOption: 'C',
-            explanation: 'Work done moving a charge along an equipotential surface is zero (dW = q E · dr = 0), hence E is perpendicular (90°) to the surface.',
+            explanation: 'Work done moving a charge along an equipotential surface is zero (dW = q E · dr = 0), so E is perpendicular (90°).',
             marks: 5,
             topic: 'Equipotential Surfaces'
           },
           {
             id: 'q_phy_4',
-            questionText: 'If a dielectric slab of dielectric constant K = 5 is inserted between parallel plate capacitors, capacitance becomes:',
-            optionA: 'Decreased by 5 times',
-            optionB: 'Increased by 5 times',
-            optionC: 'Remains unchanged',
-            optionD: 'Becomes zero',
+            questionText: 'Inserting a dielectric slab (K = 5) in a parallel plate capacitor changes its capacitance by:',
+            optionA: 'Decreased by 5x',
+            optionB: 'Increased by 5x',
+            optionC: 'Unchanged',
+            optionD: 'Zero',
             correctOption: 'B',
             explanation: 'Capacitance C = K * C₀. Inserting dielectric constant K increases capacitance K times.',
             marks: 5,
@@ -126,7 +128,7 @@ export class TestManager {
             optionC: 'x² / 2 + C',
             optionD: 'eˣ + C',
             correctOption: 'A',
-            explanation: 'The standard integral of 1/x is the natural logarithm ln|x| + C.',
+            explanation: 'The standard integral of 1/x is natural logarithm ln|x| + C.',
             marks: 5,
             topic: 'Integration'
           },
@@ -138,7 +140,7 @@ export class TestManager {
             optionC: '-2x cos(x²)',
             optionD: '2 sin(x) cos(x)',
             correctOption: 'B',
-            explanation: 'Using the Chain Rule: d/dx[sin(u)] = cos(u) * du/dx = cos(x²) * (2x).',
+            explanation: 'Using Chain Rule: d/dx[sin(u)] = cos(u) * du/dx = cos(x²) * (2x).',
             marks: 5,
             topic: 'Chain Rule'
           },
@@ -153,67 +155,174 @@ export class TestManager {
             explanation: '[sin(x)]₀^(π/2) = sin(π/2) - sin(0) = 1 - 0 = 1.',
             marks: 5,
             topic: 'Definite Integrals'
-          },
-          {
-            id: 'q_math_4',
-            questionText: 'What is the order of the differential equation (d²y/dx²)³ + dy/dx + y = 0?',
-            optionA: '1',
-            optionB: '2',
-            optionC: '3',
-            optionD: '4',
-            correctOption: 'B',
-            explanation: 'The order is the highest derivative present in the equation, which is d²y/dx² (Order 2).',
-            marks: 5,
-            topic: 'Differential Equations'
           }
         ]
       },
+
+      // --- CLASS 12 PCB ---
       {
-        id: 'test_chem_organic',
-        title: 'Organic Chemistry: Haloalkanes & Reactions',
-        description: 'Test your grasp on SN1/SN2 mechanisms, IUPAC nomenclature, and reagent actions.',
-        grade: 'Class 12 • PCM',
-        subject: 'Chemistry',
-        chapter: 'Haloalkanes',
+        id: 'test_bio_genetics',
+        title: 'Molecular Genetics & DNA Replication Quiz',
+        description: 'Test covering DNA structure, transcription, translation, and Mendel laws of inheritance.',
+        grade: 'Class 12 • PCB',
+        subject: 'Biology',
+        chapter: 'Genetics',
+        durationMins: 20,
+        totalMarks: 20,
+        createdAt: new Date().toISOString(),
+        questions: [
+          {
+            id: 'q_bio_1',
+            questionText: 'Which enzyme synthesizes the complementary DNA strand during replication?',
+            optionA: 'DNA Polymerase',
+            optionB: 'RNA Polymerase',
+            optionC: 'DNA Ligase',
+            optionD: 'Helicase',
+            correctOption: 'A',
+            explanation: 'DNA Polymerase adds deoxyribonucleotides in the 5\' to 3\' direction.',
+            marks: 5,
+            topic: 'DNA Replication'
+          },
+          {
+            id: 'q_bio_2',
+            questionText: 'In monohybrid cross between heterozygous tall pea plants (Tt x Tt), phenotypic ratio is:',
+            optionA: '1:2:1',
+            optionB: '3:1',
+            optionC: '9:3:3:1',
+            optionD: '1:1',
+            correctOption: 'B',
+            explanation: 'Phenotypic ratio is 3 Tall : 1 Dwarf plant.',
+            marks: 5,
+            topic: 'Mendelian Genetics'
+          },
+          {
+            id: 'q_bio_3',
+            questionText: 'Which RNA carries genetic information from nucleus to ribosome for protein synthesis?',
+            optionA: 'mRNA',
+            optionB: 'tRNA',
+            optionC: 'rRNA',
+            optionD: 'snRNA',
+            correctOption: 'A',
+            explanation: 'mRNA (messenger RNA) carries coding sequence from DNA to ribosome.',
+            marks: 5,
+            topic: 'Transcription'
+          }
+        ]
+      },
+
+      // --- CLASS 12 COMMERCE ---
+      {
+        id: 'test_comm_accounting',
+        title: 'Financial Statements & Ratio Analysis',
+        description: 'Practice test covering Balance Sheet ratios, Liquidity Ratio, and Profitability analysis.',
+        grade: 'Class 12 • Commerce',
+        subject: 'Accountancy',
+        chapter: 'Ratio Analysis',
+        durationMins: 20,
+        totalMarks: 15,
+        createdAt: new Date().toISOString(),
+        questions: [
+          {
+            id: 'q_acc_1',
+            questionText: 'The ideal Current Ratio for a solvent commercial enterprise is considered to be:',
+            optionA: '1:1',
+            optionB: '2:1',
+            optionC: '3:1',
+            optionD: '0.5:1',
+            correctOption: 'B',
+            explanation: 'Standard ideal Current Ratio (Current Assets / Current Liabilities) is 2:1.',
+            marks: 5,
+            topic: 'Liquidity Ratios'
+          },
+          {
+            id: 'q_acc_2',
+            questionText: 'Quick Ratio measures company ability to settle immediate liabilities. It excludes:',
+            optionA: 'Cash & Bank Balance',
+            optionB: 'Trade Receivables',
+            optionC: 'Inventory & Prepaid Expenses',
+            optionD: 'Short-term investments',
+            correctOption: 'C',
+            explanation: 'Quick Assets = Current Assets - (Inventory + Prepaid Expenses).',
+            marks: 5,
+            topic: 'Solvency Ratios'
+          }
+        ]
+      },
+
+      // --- CLASS 11 PCM ---
+      {
+        id: 'test_phy_rotational',
+        title: 'Rotational Motion & Moment of Inertia Test',
+        description: 'Covers angular momentum, torque, rolling motion, and conservation of angular momentum.',
+        grade: 'Class 11 • PCM',
+        subject: 'Physics',
+        chapter: 'Rotational Motion',
+        durationMins: 20,
+        totalMarks: 15,
+        createdAt: new Date().toISOString(),
+        questions: [
+          {
+            id: 'q_rot_1',
+            questionText: 'The rotational analogue of mass in linear motion is:',
+            optionA: 'Torque',
+            optionB: 'Moment of Inertia (I)',
+            optionC: 'Angular Velocity (ω)',
+            optionD: 'Angular Momentum (L)',
+            correctOption: 'B',
+            explanation: 'Moment of Inertia (I = ∫ r² dm) represents rotational inertia.',
+            marks: 5,
+            topic: 'Moment of Inertia'
+          },
+          {
+            id: 'q_rot_2',
+            questionText: 'Rotational kinetic energy of a body with moment of inertia I and angular velocity ω is:',
+            optionA: 'I * ω',
+            optionB: '0.5 * I * ω²',
+            optionC: 'I * ω²',
+            optionD: '0.5 * I² * ω',
+            correctOption: 'B',
+            explanation: 'K_rot = 0.5 * I * ω².',
+            marks: 5,
+            topic: 'Kinetic Energy'
+          }
+        ]
+      },
+
+      // --- CLASS 10 BOARD PREP ---
+      {
+        id: 'test_class10_science',
+        title: 'Chemical Reactions & Equations Board Mock',
+        description: 'Comprehensive Class 10 Science quiz covering oxidation-reduction, balancing, and acids-bases.',
+        grade: 'Class 10 • Board Prep',
+        subject: 'Science',
+        chapter: 'Chemical Reactions',
         durationMins: 15,
         totalMarks: 15,
         createdAt: new Date().toISOString(),
         questions: [
           {
-            id: 'q_chem_1',
-            questionText: 'Which alkyl halide undergoes SN1 reaction most rapidly?',
-            optionA: 'Primary (1°)',
-            optionB: 'Secondary (2°)',
-            optionC: 'Tertiary (3°)',
-            optionD: 'Methyl halide',
-            correctOption: 'C',
-            explanation: 'SN1 reaction rate depends on carbocation stability. Tertiary carbocations are most stable.',
+            id: 'q_c10_1',
+            questionText: 'Reaction in which two or more substances combine to form a single product is called:',
+            optionA: 'Decomposition Reaction',
+            optionB: 'Combination Reaction',
+            optionC: 'Displacement Reaction',
+            optionD: 'Double Displacement',
+            correctOption: 'B',
+            explanation: 'Combination reaction joins reactants (A + B -> AB).',
             marks: 5,
-            topic: 'Reaction Mechanisms'
+            topic: 'Types of Reactions'
           },
           {
-            id: 'q_chem_2',
-            questionText: 'Wurtz reaction involves reacting alkyl halides with:',
-            optionA: 'Sodium metal in dry ether',
-            optionB: 'Magnesium in dry ether',
-            optionC: 'Zinc metal in water',
-            optionD: 'Aqueous NaOH',
-            correctOption: 'A',
-            explanation: 'Wurtz reaction couples two alkyl halides using sodium (Na) in dry ether to yield higher alkanes.',
+            id: 'q_c10_2',
+            questionText: 'What is the pH of a neutral aqueous solution at 25°C?',
+            optionA: '0',
+            optionB: '7',
+            optionC: '14',
+            optionD: '1',
+            correctOption: 'B',
+            explanation: 'Neutral solution has pH = 7.',
             marks: 5,
-            topic: 'Name Reactions'
-          },
-          {
-            id: 'q_chem_3',
-            questionText: 'Reagent used to convert alcohol into alkyl chloride cleanly with SO₂ and HCl gases:',
-            optionA: 'PCl₅',
-            optionB: 'PCl₃',
-            optionC: 'SOCl₂ (Thionyl chloride)',
-            optionD: 'Concentrated HCl + ZnCl₂',
-            correctOption: 'C',
-            explanation: 'Darzen reaction using SOCl₂ yields pure alkyl chloride because SO₂ and HCl escape as gases.',
-            marks: 5,
-            topic: 'Reagents'
+            topic: 'Acids and Bases'
           }
         ]
       }
@@ -229,7 +338,6 @@ export class TestManager {
   async loadTests() {
     const cloudTests = await fetchSyllabusTestsFromSupabase();
     if (cloudTests && cloudTests.length > 0) {
-      // Merge cloud tests with local defaults
       const existingIds = new Set(this.tests.map(t => t.id));
       cloudTests.forEach(ct => {
         if (!existingIds.has(ct.id)) {
@@ -288,6 +396,14 @@ export class TestManager {
         this.activeFilterSubject = filterPill.dataset.subject || 'all';
         this.renderTestGrid();
       }
+
+      const gradeToggleBtn = e.target.closest('.grade-toggle-pill');
+      if (gradeToggleBtn) {
+        container.querySelectorAll('.grade-toggle-pill').forEach(b => b.classList.remove('active'));
+        gradeToggleBtn.classList.add('active');
+        this.activeFilterGrade = gradeToggleBtn.dataset.gradeFilter || 'student';
+        this.renderTestGrid();
+      }
     });
 
     this.bindUploadModalEvents();
@@ -304,7 +420,7 @@ export class TestManager {
       <div class="view-header">
         <div>
           <h1 class="view-title">Syllabus-Based Test Hub</h1>
-          <p class="view-subtitle">Upload custom syllabus practice tests and take topic-aligned mock exams for <strong>${studentGrade}</strong></p>
+          <p class="view-subtitle">Tests & assessments automatically aligned to your profile: <strong>${studentGrade}</strong></p>
         </div>
         <div class="header-actions">
           <button class="btn btn-primary" id="btn-open-upload-modal">
@@ -313,7 +429,24 @@ export class TestManager {
         </div>
       </div>
 
-      <!-- Filters Row -->
+      <!-- Grade Syllabus Filter Row -->
+      <div class="glass-card padding-4 margin-bottom-4 flex-between flex-wrap gap-3">
+        <div class="flex-align-center gap-2">
+          <span class="text-xs text-muted font-bold uppercase">Syllabus Filter:</span>
+          <button class="grade-toggle-pill ${this.activeFilterGrade === 'student' ? 'active' : ''}" data-grade-filter="student">
+            🎯 Matched to ${studentGrade}
+          </button>
+          <button class="grade-toggle-pill ${this.activeFilterGrade === 'all' ? 'active' : ''}" data-grade-filter="all">
+            📚 All Grade Tests
+          </button>
+        </div>
+
+        <div class="text-xs text-muted">
+          Change Class & Stream anytime in <a href="#" id="link-setup-profile-tests" style="color: var(--primary); text-decoration: underline;">Profile Setup</a>
+        </div>
+      </div>
+
+      <!-- Subject Filters Row -->
       <div class="filter-row margin-bottom-6 flex-between flex-wrap gap-4">
         <div class="flex-align-center gap-2" id="subject-filter-group">
           <button class="test-filter-pill active" data-subject="all">All Subjects</button>
@@ -321,9 +454,8 @@ export class TestManager {
           <button class="test-filter-pill" data-subject="Chemistry">Chemistry</button>
           <button class="test-filter-pill" data-subject="Mathematics">Mathematics</button>
           <button class="test-filter-pill" data-subject="Biology">Biology</button>
-        </div>
-        <div class="text-sm text-muted">
-          Showing syllabus-aligned tests for <strong>${studentGrade}</strong>
+          <button class="test-filter-pill" data-subject="Accountancy">Accountancy</button>
+          <button class="test-filter-pill" data-subject="Science">Science</button>
         </div>
       </div>
 
@@ -343,6 +475,15 @@ export class TestManager {
       </div>
     `;
 
+    // Bind link setup profile
+    const linkProfile = container.querySelector('#link-setup-profile-tests');
+    if (linkProfile) {
+      linkProfile.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.app.onboardingWizard?.openWizard();
+      });
+    }
+
     this.renderTestGrid();
     this.renderTestResultsTable();
 
@@ -355,7 +496,31 @@ export class TestManager {
     const grid = document.getElementById('tests-grid-container');
     if (!grid) return;
 
+    const studentGrade = this.app.profile?.grade || 'Class 12 • PCM';
+
     let filtered = this.tests;
+
+    // Apply Grade Filter
+    if (this.activeFilterGrade === 'student') {
+      filtered = filtered.filter(t => {
+        const testG = t.grade.toLowerCase();
+        const studG = studentGrade.toLowerCase();
+        // Match core class number or stream name
+        if (testG === studG) return true;
+        if (studG.includes('pcm') && testG.includes('pcm')) return true;
+        if (studG.includes('pcb') && testG.includes('pcb')) return true;
+        if (studG.includes('commerce') && testG.includes('commerce')) return true;
+        if (studG.includes('class 10') && testG.includes('class 10')) return true;
+        return false;
+      });
+
+      // If no exact matched tests exist, fallback to showing all tests with notice
+      if (filtered.length === 0) {
+        filtered = this.tests;
+      }
+    }
+
+    // Apply Subject Filter
     if (this.activeFilterSubject !== 'all') {
       filtered = filtered.filter(t => t.subject.toLowerCase() === this.activeFilterSubject.toLowerCase());
     }
@@ -365,7 +530,7 @@ export class TestManager {
         <div class="grid-span-full text-center padding-8 glass-panel">
           <i data-lucide="book-open" style="width: 48px; height: 48px; opacity: 0.5;" class="margin-bottom-3"></i>
           <h3>No Tests Found for ${this.activeFilterSubject}</h3>
-          <p class="text-muted text-sm margin-bottom-4">Upload a new test or switch to another subject tab.</p>
+          <p class="text-muted text-sm margin-bottom-4">Upload a custom test or switch to another subject tab.</p>
           <button class="btn btn-primary" id="btn-open-upload-modal-empty">Upload Test</button>
         </div>
       `;
@@ -373,31 +538,34 @@ export class TestManager {
       return;
     }
 
-    grid.innerHTML = filtered.map(t => `
-      <div class="test-card glass-panel padding-5 flex-column justify-between hover-lift">
-        <div>
-          <div class="flex-between margin-bottom-3">
-            <span class="badge badge-primary">${t.subject}</span>
-            <span class="badge badge-outline">${t.chapter}</span>
-          </div>
-          <h3 class="test-card-title margin-bottom-2">${t.title}</h3>
-          <p class="test-card-desc text-sm text-muted margin-bottom-4">${t.description}</p>
-        </div>
-
-        <div>
-          <div class="test-meta-info grid-2 gap-2 text-xs text-muted margin-bottom-4 padding-3 bg-dark-subtle rounded-md">
-            <div><i data-lucide="file-text" style="width:14px; height:14px;"></i> ${t.questions ? t.questions.length : 0} Questions</div>
-            <div><i data-lucide="award" style="width:14px; height:14px;"></i> ${t.totalMarks} Marks</div>
-            <div><i data-lucide="clock" style="width:14px; height:14px;"></i> ${t.durationMins} Mins</div>
-            <div><i data-lucide="graduation-cap" style="width:14px; height:14px;"></i> ${t.grade}</div>
+    grid.innerHTML = filtered.map(t => {
+      const isExactMatch = t.grade.toLowerCase() === studentGrade.toLowerCase();
+      return `
+        <div class="test-card glass-panel padding-5 flex-column justify-between hover-lift ${isExactMatch ? 'border-primary-highlight' : ''}">
+          <div>
+            <div class="flex-between margin-bottom-3">
+              <span class="badge badge-primary">${t.subject}</span>
+              ${isExactMatch ? '<span class="badge badge-success"><i data-lucide="check" style="width:12px;"></i> Matches Your Syllabus</span>' : `<span class="badge badge-outline">${t.chapter}</span>`}
+            </div>
+            <h3 class="test-card-title margin-bottom-2">${t.title}</h3>
+            <p class="test-card-desc text-sm text-muted margin-bottom-4">${t.description}</p>
           </div>
 
-          <button class="btn btn-primary w-full btn-take-test" data-test-id="${t.id}">
-            <i data-lucide="play"></i> Start Test Now
-          </button>
+          <div>
+            <div class="test-meta-info grid-2 gap-2 text-xs text-muted margin-bottom-4 padding-3 bg-dark-subtle rounded-md">
+              <div><i data-lucide="file-text" style="width:14px; height:14px;"></i> ${t.questions ? t.questions.length : 0} Questions</div>
+              <div><i data-lucide="award" style="width:14px; height:14px;"></i> ${t.totalMarks} Marks</div>
+              <div><i data-lucide="clock" style="width:14px; height:14px;"></i> ${t.durationMins} Mins</div>
+              <div><i data-lucide="graduation-cap" style="width:14px; height:14px;"></i> ${t.grade}</div>
+            </div>
+
+            <button class="btn btn-primary w-full btn-take-test" data-test-id="${t.id}">
+              <i data-lucide="play"></i> Start Test Now
+            </button>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
     if (window.lucide) window.lucide.createIcons();
   }
@@ -452,6 +620,11 @@ export class TestManager {
   openUploadModal() {
     const modal = document.getElementById('modal-upload-test');
     if (!modal) return;
+
+    const studentGrade = this.app.profile?.grade || 'Class 12 • PCM';
+    const gradeSelect = modal.querySelector('#input-test-grade');
+    if (gradeSelect) gradeSelect.value = studentGrade;
+
     modal.classList.add('active');
   }
 
@@ -475,7 +648,6 @@ export class TestManager {
       });
     }
 
-    // JSON file upload handler
     const jsonInput = modal.querySelector('#file-upload-json');
     if (jsonInput) {
       jsonInput.addEventListener('change', (e) => this.handleJsonFileUpload(e));
@@ -529,7 +701,6 @@ export class TestManager {
     const grade = form.querySelector('#input-test-grade').value;
     const durationMins = parseInt(form.querySelector('#input-test-duration').value || '20');
 
-    // Read initial single question from form if entered
     const qText = form.querySelector('#input-q1-text').value;
     const optA = form.querySelector('#input-q1-a').value;
     const optB = form.querySelector('#input-q1-b').value;
@@ -829,7 +1000,6 @@ export class TestManager {
       await saveTestResultToSupabase(this.app.currentUser.id, resultObj);
     }
 
-    // Auto sync to Marks Tracker
     if (this.app.marksTracker) {
       this.app.exams.push({
         id: `exam_auto_${Date.now()}`,
@@ -881,7 +1051,6 @@ export class TestManager {
           </div>
         </div>
 
-        <!-- Detailed Solutions Preview -->
         <h4 class="card-title text-sm margin-bottom-3">Detailed Solution Explanations</h4>
         <div class="solutions-list flex-column gap-3 margin-bottom-6 max-h-60 overflow-y-auto padding-right-2">
           ${questions.map((q, idx) => {

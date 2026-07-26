@@ -420,11 +420,30 @@
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             <div>
               <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Class / Grade & Stream</label>
-              <input type="text" id="setup-grade-input" class="search-input" style="padding-left: 14px; margin-top: 4px;" placeholder="e.g. Class 12 • PCM" />
+              <select id="setup-grade-input" class="search-input" style="padding-left: 12px; margin-top: 4px;">
+                <option value="Class 12 • PCM">Class 12 • PCM (Physics, Chem, Math)</option>
+                <option value="Class 12 • PCB">Class 12 • PCB (Physics, Chem, Bio)</option>
+                <option value="Class 12 • Commerce">Class 12 • Commerce</option>
+                <option value="Class 12 • Arts / Humanities">Class 12 • Arts / Humanities</option>
+                <option value="Class 11 • PCM">Class 11 • PCM (Physics, Chem, Math)</option>
+                <option value="Class 11 • PCB">Class 11 • PCB (Physics, Chem, Bio)</option>
+                <option value="Class 11 • Commerce">Class 11 • Commerce</option>
+                <option value="Class 11 • Arts / Humanities">Class 11 • Arts / Humanities</option>
+                <option value="Class 10 • Board Prep">Class 10 • Board Prep</option>
+                <option value="Class 9 • Foundation">Class 9 • Foundation</option>
+                <option value="College / Engineering">College / Higher Studies</option>
+              </select>
             </div>
             <div>
               <label style="font-size: 12px; font-family: var(--font-geist); color: var(--on-surface-variant);">Target Board / Exam</label>
-              <input type="text" id="setup-exam-input" class="search-input" style="padding-left: 14px; margin-top: 4px;" placeholder="e.g. CBSE Boards / JEE" />
+              <select id="setup-exam-input" class="search-input" style="padding-left: 12px; margin-top: 4px;">
+                <option value="JEE Main / Advanced 2026">JEE Main & Advanced 2026</option>
+                <option value="NEET UG 2026">NEET UG 2026</option>
+                <option value="CBSE / ISC Board Exams 2026">CBSE / ISC Board Exams 2026</option>
+                <option value="Class 10 Board Exams 2026">Class 10 Board Exams 2026</option>
+                <option value="CUET Entrance 2026">CUET University Entrance 2026</option>
+                <option value="State Board Examinations">State Board Examinations</option>
+              </select>
             </div>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">

@@ -162,12 +162,52 @@ export class OnboardingWizard {
     const modal = document.getElementById('onboarding-modal');
     if (!modal) return;
 
-    // Blank / fresh initial inputs (no dummy hardcoded Arjun Sharma)
+    const gradeSelect = document.getElementById('setup-grade-input');
+    const examSelect = document.getElementById('setup-exam-input');
+
+    if (gradeSelect && this.state.profile.grade) {
+      gradeSelect.value = this.state.profile.grade;
+    }
+    if (examSelect && this.state.profile.targetExam) {
+      examSelect.value = this.state.profile.targetExam;
+    }
+
     document.getElementById('setup-name-input').value = this.state.profile.name !== 'Student' ? (this.state.profile.name || '') : '';
-    document.getElementById('setup-grade-input').value = this.state.profile.grade || '';
-    document.getElementById('setup-exam-input').value = this.state.profile.targetExam || '';
     document.getElementById('setup-days-input').value = this.state.profile.daysToExam || 60;
     document.getElementById('setup-target-input').value = this.state.profile.targetScore || 90;
+
+    // Listen to Grade changes to prefill subjects if list is blank
+    if (gradeSelect) {
+      gradeSelect.onchange = () => {
+        const stream = gradeSelect.value;
+        const listEl = document.getElementById('onboarding-subjects-list');
+        if (listEl && listEl.children.length <= 1) {
+          listEl.innerHTML = '';
+          if (stream.includes('PCB')) {
+            this.addSubjectRow('Physics', 'Dr. Verma', 90);
+            this.addSubjectRow('Chemistry', 'Prof. Sharma', 90);
+            this.addSubjectRow('Biology', 'Dr. Gupta', 95);
+            this.addSubjectRow('English', 'Ms. Davis', 85);
+          } else if (stream.includes('Commerce')) {
+            this.addSubjectRow('Accountancy', 'CA Mehta', 90);
+            this.addSubjectRow('Economics', 'Dr. Rao', 90);
+            this.addSubjectRow('Business Studies', 'Prof. Kapoor', 90);
+            this.addSubjectRow('Mathematics', 'Mr. Singh', 85);
+          } else if (stream.includes('Class 10')) {
+            this.addSubjectRow('Mathematics', 'Mr. Sharma', 95);
+            this.addSubjectRow('Science', 'Dr. Roy', 90);
+            this.addSubjectRow('Social Science', 'Mrs. Joshi', 85);
+            this.addSubjectRow('English', 'Ms. Parker', 90);
+          } else {
+            // PCM / Default
+            this.addSubjectRow('Physics', 'Dr. HC Verma', 95);
+            this.addSubjectRow('Chemistry', 'Prof. OP Tandon', 90);
+            this.addSubjectRow('Mathematics', 'Mr. RD Sharma', 95);
+            this.addSubjectRow('English', 'Mrs. Smith', 85);
+          }
+        }
+      };
+    }
 
     this.renderSubjectRows();
     this.showStep(1);
